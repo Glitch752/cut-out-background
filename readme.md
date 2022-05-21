@@ -6,4 +6,3 @@ Currently, it's very manual and tedious, but I'm planning some features to make 
 ### Todo
 - Detect where the selected area in the frame moves to and move the selection for less manual work  
 - Allow addition of points midway through a line  
-- Add ability to set image as background  
