@@ -174,6 +174,7 @@ function renderCanvas() {
     }
     ctx.stroke();
 
+    let hoveringCircle = false;
     for(var i = 0; i < cropPositions.length; i++) {
         let bounds = canvas.getBoundingClientRect();
         let offsetMouseX = mouseX - bounds.left;
@@ -183,8 +184,10 @@ function renderCanvas() {
 
         if(draggingCircle === i) {
             ctx.fillStyle = "#55ffff";
+            hoveringCircle = true;
         } else if(pointInCircle(cropPositions[i].x, cropPositions[i].y, circleRadius, x, y)) {
             ctx.fillStyle = "#55ff55";
+            hoveringCircle = true;
         } else {
             ctx.fillStyle = "green";
         }
@@ -193,9 +196,31 @@ function renderCanvas() {
         ctx.fill();
     }
 
+    let bounds = canvas.getBoundingClientRect();
+    let offsetMouseX = mouseX - bounds.left;
+    let offsetMouseY = mouseY - bounds.top;
+
+    let x = offsetMouseX / bounds.width * canvas.width;
+    let y = offsetMouseY / bounds.height * canvas.height;
+
+    let lineColliding = false;
+    if(!hoveringCircle) {
+        for(var i = 0; i < cropPositions.length; i++) {
+            if(pointCollidingWithLine(cropPositions[i].x, cropPositions[i].y, cropPositions[(i + 1) % cropPositions.length].x, cropPositions[(i + 1) % cropPositions.length].y, x, y, circleRadius)) {
+                ctx.fillStyle = "#55ffaa";
+                ctx.beginPath();
+                let closestLinePoints = closestPointOnLine(cropPositions[i].x, cropPositions[i].y, cropPositions[(i + 1) % cropPositions.length].x, cropPositions[(i + 1) % cropPositions.length].y, x, y);
+                ctx.arc(closestLinePoints.x, closestLinePoints.y, circleRadius, 0, Math.PI * 2);
+                ctx.fill();
+                lineColliding = true;
+                break;
+            }
+        }
+    }
+
     ctx.strokeStyle = "grey";
 
-    if(cropPositions.length > 0) {
+    if(cropPositions.length > 0 && !lineColliding) {
         ctx.beginPath();
         ctx.moveTo(cropPositions[cropPositions.length - 1].x, cropPositions[cropPositions.length - 1].y);
         ctx.lineTo(frameCropMouse.x, frameCropMouse.y);
@@ -229,6 +254,13 @@ function canvasMouseDown(e) {
 
     let x = offsetMouseX / bounds.width * canvas.width;
     let y = offsetMouseY / bounds.height * canvas.height;
+    
+    for(var i = 0; i < cropPositions.length; i++) {
+        if(pointCollidingWithLine(cropPositions[i].x, cropPositions[i].y, cropPositions[(i + 1) % cropPositions.length].x, cropPositions[(i + 1) % cropPositions.length].y, x, y, circleRadius)) {
+            cropPositions.splice(i + 1, 0, {x: x, y: y});
+            return;
+        }
+    }
 
     cropPositions.push({
         x: x,
@@ -425,4 +457,34 @@ function updateBackground() {
             urlBackground.style.display = "none";
             break;
     }
+}
+
+function pointCollidingWithLine(lineX1, lineY1, lineX2, lineY2, pointX, pointY, tolerance) {
+    let dx = lineX2 - lineX1;
+    let dy = lineY2 - lineY1;
+    let t = ((pointX - lineX1) * dx + (pointY - lineY1) * dy) / (dx * dx + dy * dy);
+    if(t < 0) {
+        t = 0;
+    } else if(t > 1) {
+        t = 1;
+    }
+    let closestX = lineX1 + t * dx;
+    let closestY = lineY1 + t * dy;
+    let distance = Math.sqrt(Math.pow(closestX - pointX, 2) + Math.pow(closestY - pointY, 2));
+    return distance < tolerance;
+}
+
+function closestPointOnLine(lineX1, lineY1, lineX2, lineY2, pointX, pointY) {
+    let dx = lineX2 - lineX1;
+    let dy = lineY2 - lineY1;
+    let t = ((pointX - lineX1) * dx + (pointY - lineY1) * dy) / (dx * dx + dy * dy);
+    if(t < 0) {
+        t = 0;
+    } else if(t > 1) {
+        t = 1;
+    }
+    return {
+        x: lineX1 + t * dx,
+        y: lineY1 + t * dy
+    };
 }

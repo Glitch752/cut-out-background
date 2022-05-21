@@ -4,5 +4,4 @@ I've sometimes needed a way to remove the background from a video, but I want to
 Currently, it's very manual and tedious, but I'm planning some features to make it less so.
 
 ### Todo
-- Detect where the selected area in the frame moves to and move the selection for less manual work  
-- Allow addition of points midway through a line  
+- Detect where the selected area in the frame moves to and move the selection for less manual work
