@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cutOutBackground</title>
+    <script src="main.js"></script>
+    <!-- Modified ccapture so it's not minified anymore lol -->
+    <!-- <script src="ccapture.min.all.js"></script> -->
+    <script src="ccapture.all.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="progressBar" id="progressBar">
+        <div class="progressBarLine" onClick="transitionToSpot()" id="progressBarLine"></div>
+    </div>
+    <div class="canvasContainer">
+        <canvas class="canvas" id="prevImgCanvas">Your browser does not support the HTML5 canvas tag.</canvas>
+        <div class="controlsContainer">
+            <div class="controls">
+                <input type="file" accept="video/*" id="videoSelect" />
+                <input type="submit" onClick="loadNextFrame(1)" value="load next frame" /><br/>
+                <input type="submit" onClick="loadLastFrame(1)" value="load previous frame" /><br/>
+                <br />
+                <input type="submit" onClick="loadNextFrame(10)" value="skip next 10 frames" /><br/>
+                <input type="submit" onClick="loadLastFrame(10)" value="skip back 10 frames" /><br/>
+                <br />
+                <input type="submit" onClick="loadEnd()" value="skip to end" /><br/>
+                <input type="submit" onClick="loadStart()" value="skip to start" /><br/>
+                <br />
+                <div>
+                    <input type="radio" name="background" value="image" onChange="updateBackground()">
+                    <label for="background">Image background</label>
+                    <br />
+                    <input type="radio" name="background" checked value="color" onChange="updateBackground()">
+                    <label for="background">Color background</label>
+                    <fieldset id="coloredBackground" style="display: block;">
+                        <legend>Background settings</legend>
+                        <input type="color" name="backgroundColor" id="backgroundColor" value="#00ff00">
+                        <label for="backgroundColor">Background color</label>
+                    </fieldset>
+                    <fieldset id="urlBackground" style="display: none;">
+                        <legend>Background settings</legend>
+                        <input type="text" placeholder="Url..." id="imageUrl">
+                    </fieldset>
+                </div>
+                <br />
+                <select id="exportType">
+                    <option value="webm">Mp4 video</option>
+                    <option value="gif">Gif (with transparency)</option>
+                    <option value="png">Tar file of PNG images</option>
+                    <option value="jpeg">Tar file of JPEG images</option>
+                </select><br />
+                <input type="submit" onClick="render()" value="render" /><br/>
+                <br /><br />
+                Hold X over point to delete
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+.canvasContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.canvas {
+    width: auto;
+    height: calc(100vh - 5rem);
+    margin: 1rem;
+    border: 0.2rem solid black;
+}
+.controlsContainer {
+    height: calc(100vh - 5rem);
+    margin: 1rem;
+    width: 100%;
+    display: flex;
+}
+.progressBar {
+    margin: 1rem;
+    height: 2rem;
+    position: absolute;
+    width: calc(100vw - 2rem);
+    background-color: grey;
+}
+.progressBar::after {
+    content: '';
+    background-color: lime;
+    height: 2rem;
+    position: absolute;
+    width: calc((100vw - 2rem) * var(--progress, 0));
+}
+.progressBarLine {
+    display: none;
+    height: 2rem;
+    width: 0.5rem;
+    background-color: #444444;
+    position: absolute;
+    left: calc((var(--x, 0) * 1px) - 1rem);
+    z-index: 100;
+}
+.progressBar:hover .progressBarLine {
+    display: inline-block;
+}
